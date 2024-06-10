@@ -30,18 +30,6 @@ public class Post {
     private LocalDateTime createdAt;
 
 
-    private int likeCount;  // 추가: 좋아요 수
-    private int viewCount;  // 조회수 추가@ElementCollection
-
-
-    @ManyToMany
-    @JoinTable(
-            name = "post_likes",
-            joinColumns = @JoinColumn(name = "post_id"),
-            inverseJoinColumns = @JoinColumn(name = "member_id")
-    )
-    private Set<Member> likes = new HashSet<>();  // 추가: 좋아요를 누른 사용자 목록
-
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Comment> comments;
@@ -89,22 +77,6 @@ public class Post {
     }
 
 
-    public int getLikeCount() {
-        return likeCount;
-    }
-
-    public void setLikeCount(int likeCount) {
-        this.likeCount = likeCount;
-    }
-
-    public Set<Member> getLikes() {
-        return likes;
-    }
-
-    public void setLikes(Set<Member> likes) {
-        this.likes = likes;
-    }
-
     public List<Comment> getComments() {
         return comments;
     }
@@ -121,13 +93,6 @@ public class Post {
     public void removeComment(Comment comment) {
         comments.remove(comment);
         comment.setPost(null);
-    }
-    public int getViewCount() {
-        return viewCount;
-    }
-
-    public void setViewCount(int viewCount) {
-        this.viewCount = viewCount;
     }
 
     @Override

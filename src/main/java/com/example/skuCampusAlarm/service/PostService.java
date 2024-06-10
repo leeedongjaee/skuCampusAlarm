@@ -1,14 +1,13 @@
 package com.example.skuCampusAlarm.service;
 
+
 import com.example.skuCampusAlarm.domain.Member;
 import com.example.skuCampusAlarm.domain.Post;
 import com.example.skuCampusAlarm.repository.MemberRepository;
 import com.example.skuCampusAlarm.repository.PostRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,14 +30,12 @@ public class PostService {
         this.memberRepository = memberRepository;
     }
 
-    public void createPost(String title,String content,Member author) {
+    public void createPost(String title, String content, Member author) {
         Post post = new Post();
         post.setTitle(title);
         post.setContent(content);
         post.setCreatedAt(LocalDateTime.now());
         post.setAuthor(author);
-        post.setLikeCount(0);
-        post.setViewCount(0);
 
         postRepository.save(post);
     }
@@ -78,13 +75,6 @@ public class PostService {
         return postRepository.findByAuthorId(authorId);
     }
 
-
-    @Transactional
-    public void increaseViewCount(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Invalid post ID: " + postId));
-        post.setViewCount(post.getViewCount() + 1);
-        postRepository.save(post);
-    }
 
 
 

@@ -5,7 +5,6 @@ import com.example.skuCampusAlarm.domain.Post;
 import com.example.skuCampusAlarm.domain.PostForm;
 import com.example.skuCampusAlarm.repository.MemberRepository;
 import com.example.skuCampusAlarm.repository.PostRepository;
-import com.example.skuCampusAlarm.service.LikeService;
 import com.example.skuCampusAlarm.service.PostService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,16 +25,14 @@ public class PostController {
     private final PostService postService;
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
-    private final LikeService likeService;
+
 
     @Autowired
     public PostController(PostService postService,
-                          MemberRepository memberRepository, PostRepository postRepository,
-                          LikeService likeService) {
+                          MemberRepository memberRepository, PostRepository postRepository) {
         this.postService = postService;
         this.memberRepository = memberRepository;
         this.postRepository = postRepository;
-        this.likeService = likeService;
     }
 
     @PostMapping("/post/new")
@@ -67,7 +62,6 @@ public class PostController {
     public ResponseEntity<Post> showPost(@PathVariable("id") Long postId) {
         return postService.getPostById(postId)
                 .map(post -> {
-                    postService.increaseViewCount(postId);
                     post.getComments().size();
 
                     return ResponseEntity.ok(post);
@@ -127,16 +121,6 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 ID의 게시물을 찾을 수 없습니다.");
         }
 
-    }
-        @PostMapping("/posts/{postId}/like")
-    public ResponseEntity<String> likePost(@PathVariable("postId") Long postId, HttpSession session) {
-        Member loggedInMember = (Member) session.getAttribute("loggedInMember");
-        if (loggedInMember == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
-        }
-
-        likeService.likePost(postId, loggedInMember);
-        return ResponseEntity.ok("Liked");
     }
 
 }

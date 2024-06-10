@@ -2,7 +2,6 @@ package com.example.skuCampusAlarm;
 
 import com.example.skuCampusAlarm.repository.MemberRepository;
 import com.example.skuCampusAlarm.repository.PostRepository;
-import com.example.skuCampusAlarm.service.LikeService;
 import com.example.skuCampusAlarm.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -24,8 +23,4 @@ public class SpringConfig {
         return new MemberService(memberRepository);
     }
 
-    @Bean
-    public LikeService likeService() {
-        return new LikeService(postRepository, memberRepository);
-    }
 }
