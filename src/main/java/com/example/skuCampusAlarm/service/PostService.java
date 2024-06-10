@@ -30,12 +30,8 @@ public class PostService {
         this.memberRepository = memberRepository;
     }
 
-    public void createPost(String title, String content, Member author) {
-        Post post = new Post();
-        post.setTitle(title);
-        post.setContent(content);
-        post.setCreatedAt(LocalDateTime.now());
-        post.setAuthor(author);
+    public void createPost(Post post) {
+
 
         postRepository.save(post);
     }

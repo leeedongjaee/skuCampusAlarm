@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -34,16 +36,25 @@ public class PostController {
         this.memberRepository = memberRepository;
         this.postRepository = postRepository;
     }
-
-    @PostMapping("/post/new")
-    public ResponseEntity<String> createPost(@RequestBody PostForm postForm,
+    @PostMapping("/posts/new")
+    public ResponseEntity<String> createPost(@RequestBody Map<String, String> request,
                                              HttpSession session) throws IOException {
         Member loggedInMember = (Member) session.getAttribute("loggedInMember");
         if (loggedInMember == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
 
-        postService.createPost(postForm.getTitle(), postForm.getContent(), loggedInMember);
+        String title = request.get("title");
+        String content = request.get("content");
+
+        Post post = new Post();
+        post.setTitle(title);
+        post.setContent(content);
+        post.setCreatedAt(LocalDateTime.now());
+        post.setAuthor(loggedInMember);
+
+        postService.createPost(post);
+
         return ResponseEntity.status(HttpStatus.CREATED).body("게시글이 성공적으로 작성되었습니다.");
     }
 
